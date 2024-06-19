@@ -4,7 +4,7 @@ from glob import glob
 from skimage.color import rgb2gray, rgba2rgb
 from stardist import random_label_cmap
 from stardist.models import StarDist2D
-from tifffile import imread
+from PIL import Image
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,20 +22,16 @@ np.random.seed(42)
 # generates a random color map for labeled regions
 lbl_cmap = random_label_cmap()
 
-# directory containing images for prediction
-image_dir = "prediction"
-
-# sorts files by name
-file_names = sorted(os.listdir(image_dir))
-
-# List of file extensions to include
-extensions = ["*.tiff", "*.tif"]
-
 # Combine the results for both extensions
-X = sorted([file for ext in extensions for file in glob(os.path.join(image_dir, ext))])
+X = sorted(glob("prediction/*.*"))
+
+# function to read images using Pillow
+def read_image(filename):
+    with Image.open(filename) as img:
+        return np.array(img)
 
 # read images from X
-X = list(map(imread, X))
+X = list(map(read_image, X))
 
 n_channel = 1 if X[0].ndim == 2 else X[0].shape[-1]
 axis_norm = (0,1)   # normalize channels independently
@@ -47,7 +43,7 @@ if n_channel > 1:
 axis_norm = (0, 1)
 
 # load the specific model you created from the directory of your models
-model = StarDist2D(None, name="datasize_9/customModel_9_epochs_100", basedir="models")
+model = StarDist2D(None, name="datasize_10/customModel_10_epochs_50", basedir="models")
 
 # Function to extract class information from the prediction result
 def class_from_res(res):
@@ -115,9 +111,6 @@ def prediction(model, i, show_dist=True):
 
     # Count the number of unique labels (subtract 1 to exclude the background label 0)
     num_objects = len(np.unique(labels)) - 1
-
-    # Get the file name for the current image
-    file_name = file_names[i]
 
     # Initialize a plot of specified size
     plt.figure(figsize=(13, 10))

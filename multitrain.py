@@ -99,17 +99,17 @@ def main(args):
 
     def load_class_dict(filename):
         cls_dict = {}
-        print(f"Reading class dict from {filename}")
+        #print(f"Reading class dict from {filename}")
         with open(filename, 'r') as f:
             content = f.readlines()
-            print(f"Contents of {filename}: {content}")
+            #print(f"Contents of {filename}: {content}")
             for line in content:
                 match = re.match(r'^\s*Label\s*(\d+)\s*:\s*(F|UF)', line.strip())
                 if match:
                     key = int(match.group(1))
                     value = match.group(2).strip()
                     cls_dict[key] = 1 if value == 'F' else 2  # Assuming 'F' is class 1 and 'UF' is class 2
-        print(f"Loaded class dict: {cls_dict}")
+        #print(f"Loaded class dict: {cls_dict}")
         return cls_dict
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images
@@ -223,9 +223,9 @@ def main(args):
     C_val = ensure_class_dicts(all_labels_val, C_val)
     C_test = ensure_class_dicts(all_labels_test, C_test)
 
-    print(f"Final class dictionaries for training: {C_train}")
-    print(f"Final class dictionaries for validation: {C_val}")
-    print(f"Final class dictionaries for testing: {C_test}")
+    # print(f"Final class dictionaries for training: {C_train}")
+    # print(f"Final class dictionaries for validation: {C_val}")
+    # print(f"Final class dictionaries for testing: {C_test}")
     ###############################################################
 
 

@@ -5,7 +5,7 @@ from glob import glob
 from stardist import fill_label_holes, calculate_extents
 from stardist.matching import matching_dataset
 from stardist.models import Config2D, StarDist2D
-from tifffile import imread
+from PIL import Image
 from tqdm import tqdm
 import argparse
 import csv
@@ -13,12 +13,10 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import sys
-import threading
-import time
+import re
 
 # X_filenames represents the raw images
-X_filenames = sorted(glob("images/*.tif"))
+X_filenames = sorted(glob("images/*.*"))
 
 # function to parse arguments given in command line
 def parse_args():
@@ -34,20 +32,25 @@ def parse_args():
     parser.add_argument("--model_name", type=str, default="customModel", help="Sets the name of the model. Accepts a string. Default: customModel")
     return parser.parse_args()
 
+# function to read images using Pillow
+def read_image(filename):
+    with Image.open(filename) as img:
+        return np.array(img)
+    
 # main function
 def main(args):
 
     # Y represents the masks
-    Y = sorted(glob("masks/*.tif"))
+    Y = sorted(glob("masks/*.*"))
 
     # assertion check ensures that each image has a matching mask with the same filename
-    assert all(Path(x).name==Path(y).name for x,y in zip(X_filenames,Y))
+    assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, Y))
 
     # read image files and store them in a list named X
-    X = list(map(imread, X_filenames))
+    X = list(map(read_image, X_filenames))
 
     # read image files and store them in a list named Y
-    Y = list(map(imread, Y))
+    Y = list(map(read_image, Y))
     # ensures that any random operations are reproducible across all runs
     np.random.seed(42)
 
@@ -94,15 +97,19 @@ def main(args):
     Y = [pad_image(y) for y in Y]
     Y = [y.astype(np.int32) for y in Y]
 
-
-    # Load class dictionaries from files
     def load_class_dict(filename):
         cls_dict = {}
+        print(f"Reading class dict from {filename}")
         with open(filename, 'r') as f:
-            for line in f:
-                if ':' in line:
-                    key, value = line.strip().split(':')
-                    cls_dict[int(key)] = 1 if value == 'V' else 2  # Assuming 'V' is class 1 and 'NV' is class 2
+            content = f.readlines()
+            print(f"Contents of {filename}: {content}")
+            for line in content:
+                match = re.match(r'^\s*Label\s*(\d+)\s*:\s*(F|UF)', line.strip())
+                if match:
+                    key = int(match.group(1))
+                    value = match.group(2).strip()
+                    cls_dict[key] = 1 if value == 'F' else 2  # Assuming 'F' is class 1 and 'UF' is class 2
+        print(f"Loaded class dict: {cls_dict}")
         return cls_dict
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images
@@ -110,6 +117,16 @@ def main(args):
     assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, cls_filenames))
 
     C = [load_class_dict(f) for f in cls_filenames]
+
+    #####################################################################
+    def ensure_class_dicts(labels, class_dicts):
+        for cls_dict in class_dicts:
+            for label in labels:
+                if label not in cls_dict:
+                    cls_dict[label] = 0  # Assign a default class (adjust as needed)
+        return class_dicts
+    ######################################################################
+
 
 
     # number of rays to use for the non-maximum suppression in the StarDist model
@@ -195,6 +212,22 @@ def main(args):
     # get your training and validation datasets
     X_train, Y_train, C_train = [X[i] for i in train_indices], [Y[i] for i in train_indices], [C[i] for i in train_indices]
     X_val, Y_val, C_val = [X[i] for i in val_indices], [Y[i] for i in val_indices], [C[i] for i in val_indices]
+
+    ###############################################################
+    # Ensure the class dictionaries include all necessary labels
+    all_labels_train = set(np.unique(np.concatenate(Y_train)))
+    all_labels_val = set(np.unique(np.concatenate(Y_val)))
+    all_labels_test = set(np.unique(np.concatenate(Y_test)))
+
+    C_train = ensure_class_dicts(all_labels_train, C_train)
+    C_val = ensure_class_dicts(all_labels_val, C_val)
+    C_test = ensure_class_dicts(all_labels_test, C_test)
+
+    print(f"Final class dictionaries for training: {C_train}")
+    print(f"Final class dictionaries for validation: {C_val}")
+    print(f"Final class dictionaries for testing: {C_test}")
+    ###############################################################
+
 
     # # prints amount of images in training, validation, and testing to verify
     # print(f"training set size: {len(X_train)}")

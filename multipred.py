@@ -43,7 +43,7 @@ if n_channel > 1:
 axis_norm = (0, 1)
 
 # load the specific model you created from the directory of your models
-model = StarDist2D(None, name="datasize_10/customModel_10_epochs_50", basedir="models")
+model = StarDist2D(None, name="datasize_10/customModel_10_epochs_25", basedir="models")
 
 # Function to extract class information from the prediction result
 def class_from_res(res):
@@ -52,8 +52,7 @@ def class_from_res(res):
 
 # Function to split masks by cell type
 def class_splitter(mask, cls_dict):
-    # 1 is Nonviable and 2 is viable
-    # the first return is the mask of all viable and the second is nonviable
+    # 1 is viable (F) and 2 is nonviable (UF)
     mask_len = len(mask)
     mask_height = len(mask[0])
     mask_viable = copy.deepcopy(mask)
@@ -62,9 +61,9 @@ def class_splitter(mask, cls_dict):
         for j in range(mask_height):
             if mask[i][j] == 0:
                 pass
-            elif cls_dict[mask[i][j]] == 1:
-                mask_viable[i][j] = 0
             elif cls_dict[mask[i][j]] == 2:
+                mask_viable[i][j] = 0
+            elif cls_dict[mask[i][j]] == 1:
                 mask_nonviable[i][j] = 0
     return mask_viable, mask_nonviable
 
@@ -101,12 +100,12 @@ def prediction(model, i, show_dist=True):
         # Split the mask by cell type
         mask_viable, mask_nonviable = class_splitter(labels, classes)
 
-        # Count the number of V and NV instances
-        num_v = len(np.unique(mask_viable)) - 1  # subtract 1 to exclude the background label 0
-        num_nv = len(np.unique(mask_nonviable)) - 1  # subtract 1 to exclude the background label 0
-        print(f"Image {i}: V = {num_v}, NV = {num_nv}")
+        # Count the number of F and UF instances
+        num_f = len(np.unique(mask_viable)) - 1  # subtract 1 to exclude the background label 0
+        num_uf = len(np.unique(mask_nonviable)) - 1  # subtract 1 to exclude the background label 0
+        print(f"Image {i}: F = {num_f}, UF = {num_uf}")
     else:
-        num_v = num_nv = 0
+        num_f = num_uf = 0
         print(f"Image {i}: No class information available")
 
     # Count the number of unique labels (subtract 1 to exclude the background label 0)
@@ -123,7 +122,7 @@ def prediction(model, i, show_dist=True):
     plt.imshow(labels, cmap=lbl_cmap, alpha=0.5)
 
     # Add the title from the first image
-    plt.title(f"Predicted Objects: {num_objects}\nV = {num_v}, NV = {num_nv}", fontsize=16)
+    plt.title(f"Predicted Objects: {num_objects}\nF = {num_f}, UF = {num_uf}", fontsize=16)
 
     # Hide axes
     plt.axis("off")

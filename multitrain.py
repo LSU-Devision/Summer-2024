@@ -22,11 +22,11 @@ X_filenames = sorted(glob("images/*.*"))
 def parse_args():
     parser = argparse.ArgumentParser(description="Here is the help section for the optional commands.")
     parser.add_argument("--total_data", type=int, default=len(X_filenames), help="Sets the total amount of data. Default: total amount of images in the images folder.")
-    parser.add_argument("--dataset_size", type=int, default=int(.75*len(X_filenames)), 
+    parser.add_argument("--dataset_size", type=int, default=len(X_filenames),
         help="Sets the size of the dataset to be used. Cannot be equal to total_data as there would be no testing data and the program will not work. Default: .75 of the total_data.")
     parser.add_argument("--rays", type=int, default=32, help="Sets the number of Rays. Default: 32.")
-    parser.add_argument("--train_split", type=float, default=0.85, help="Sets the percent to split training/validation data. Default: .85.")
-    parser.add_argument("--testing_size", type=int, default=1, help="Sets the number of testing images. Default: 1 to ensure the program works.")
+    parser.add_argument("--train_split", type=float, default=0.80, help="Sets the percent to split training/validation data. Default: .85.")
+    parser.add_argument("--testing_size", type=int, default=int(.2 * len(X_filenames)), help="Sets the number of testing images. Default: 1 to ensure the program works.")
     parser.add_argument("--epochs", type=int, nargs='+', default=[10], 
         help="Sets the number of epochs. Accepts a number or list of numbers. E.g. --epochs 10 50 100 300. Default: 10.")
     parser.add_argument("--model_name", type=str, default="customModel", help="Sets the name of the model. Accepts a string. Default: customModel")
@@ -174,8 +174,7 @@ def main(args):
     # should be set to the same number as the seed at the beginning of the script
     rng = np.random.default_rng(42)
 
-    # size of dataset to train on
-    dataset_size = args.dataset_size
+
 
     # this is only relevant when you want different versions
     # version = 1
@@ -189,20 +188,24 @@ def main(args):
     # selects 36 random unique images for testing from the total 180 images
     # change 180 to amount of data you have: replace is set to false to ensure
     # that the program selects unique images for the testing set
-    test_indices = rng.choice(total_data, size=args.testing_size, replace=False)
+    test_size = args.testing_size
+    test_indices = rng.choice(total_data, size=test_size, replace=False)
 
     # get your test datasets
     X_test, Y_test, C_test = [X[i] for i in test_indices], [Y[i] for i in test_indices], [C[i] for i in test_indices]
 
+    # size of dataset to train on
+    dataset_size = args.total_data - args.testing_size
+    
     # remaining images are the ones that aren't in the test set
-    all_remaining_indices = list(set(range(total_data)) - set(test_indices))
+    all_remaining_indices = list(set(range(args.total_data)) - set(test_indices))
 
     # select subset from the remaining based on dataset_size
     selected_indices = rng.choice(all_remaining_indices, size=dataset_size, replace=False)
 
     # determine sizes for training and validation
     # % of the dataset_size
-    n_train_split = args.train_split
+    n_train_split = 0.8
     n_train = int(n_train_split * dataset_size)
 
     # split the selected data into training and validation
@@ -229,9 +232,9 @@ def main(args):
     ###############################################################
 
 
-    # # prints amount of images in training, validation, and testing to verify
-    # print(f"training set size: {len(X_train)}")
-    # print(f"validation set size: {len(X_val)}")
+    # prints amount of images in training, validation, and testing to verify
+    print(f"training set size: {len(X_train)}")
+    print(f"validation set size: {len(X_val)}")
 
     # where the model will be saved
     base_dir = "models"

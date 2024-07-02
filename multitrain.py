@@ -99,19 +99,33 @@ def main(args):
 
     def load_class_dict(filename):
         cls_dict = {}
-        pattern = re.compile(r'^\s*(label|Label)\s*\d+\s*:\s*[a-zA-Z0-9]+\s*$', re.IGNORECASE)
+        # Updated pattern to match lines like "Label  294     :       UF" with any amount of whitespace
+        pattern = re.compile(r'^\s*(label|Label)\s*(\d+)\s*:\s*([a-zA-Z0-9]+)\s*$', re.IGNORECASE)
         
         with open(filename, 'r') as f:
             content = f.readlines()
             
             for line in content:
+                # print(f"Processing line: {line.strip()}")
                 match = pattern.match(line.strip())
-                if match:
-                    label, num, value = re.split(r'\s*:\s*', line.strip(), maxsplit=2)
-                    key = int(re.search(r'\d+', label, re.IGNORECASE).group())
-                    value = value.strip().upper()
-                    cls_dict[key] = 1 if value == 'F' else 2  # Assuming 'F' is class 1 and 'UF' is class 2
+                if match:  # Check if the line matches the pattern
+                    label = match.group(1)
+                    num = match.group(2)
+                    value = match.group(3).strip().upper()
+                    key = int(num)
+                    # Assuming 'F' is class 1 and 'UF' is class 2
+                    cls_dict[key] = 1 if value == 'F' else 2
+                else:
+                    # Print a message if the line does not match the pattern
+                    # print(f"Skipping line in {filename} due to pattern mismatch: {line.strip()}")
+                    pass
+        # print(f"Class dictionary for {filename}: {cls_dict}")
         return cls_dict
+
+
+
+
+
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images
     cls_filenames = sorted(glob("labels/*.txt"))

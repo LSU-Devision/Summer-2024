@@ -104,12 +104,12 @@ def main(args):
             content = f.readlines()
             #print(f"Contents of {filename}: {content}")
             for line in content:
-                match = re.match(r'^\s*Label\s*(\d+)\s*:\s*(F|UF)', line.strip())
+                match = re.match(r'^\s*Label\s*(\d+)\s*:\s*(F|UF)', line.strip(), re.IGNORECASE)
                 if match:
                     key = int(match.group(1))
-                    value = match.group(2).strip()
+                    value = match.group(2).strip().upper()
                     cls_dict[key] = 1 if value == 'F' else 2  # Assuming 'F' is class 1 and 'UF' is class 2
-        #print(f"Loaded class dict: {cls_dict}")
+            #print(f"Loaded class dict: {cls_dict}")
         return cls_dict
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images

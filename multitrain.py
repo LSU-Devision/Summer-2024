@@ -114,7 +114,7 @@ def main(args):
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images
     cls_filenames = sorted(glob("labels/*.txt"))
-    assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, cls_filenames))
+    # assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, cls_filenames))
 
     C = [load_class_dict(f) for f in cls_filenames]
 

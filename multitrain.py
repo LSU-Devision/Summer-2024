@@ -99,33 +99,33 @@ def main(args):
 
     def load_class_dict(filename):
         cls_dict = {}
-        #print(f"Reading class dict from {filename}")
+        pattern = re.compile(r'^\s*(label|Label)\s*\d+\s*:\s*[a-zA-Z0-9]+\s*$', re.IGNORECASE)
+        
         with open(filename, 'r') as f:
             content = f.readlines()
-            #print(f"Contents of {filename}: {content}")
+            
             for line in content:
-                match = re.match(r'^\s*Label\s*(\d+)\s*:\s*(F|UF)', line.strip(), re.IGNORECASE)
+                match = pattern.match(line.strip())
                 if match:
-                    key = int(match.group(1))
-                    value = match.group(2).strip().upper()
+                    label, num, value = re.split(r'\s*:\s*', line.strip(), maxsplit=2)
+                    key = int(re.search(r'\d+', label, re.IGNORECASE).group())
+                    value = value.strip().upper()
                     cls_dict[key] = 1 if value == 'F' else 2  # Assuming 'F' is class 1 and 'UF' is class 2
-            #print(f"Loaded class dict: {cls_dict}")
         return cls_dict
 
     # Assuming class dictionaries are stored in 'class_dicts/' with filenames matching the images
     cls_filenames = sorted(glob("labels/*.txt"))
-    # assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, cls_filenames))
 
+    # assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, cls_filenames))
+    
     C = [load_class_dict(f) for f in cls_filenames]
 
-    #####################################################################
     def ensure_class_dicts(labels, class_dicts):
         for cls_dict in class_dicts:
             for label in labels:
                 if label not in cls_dict:
                     cls_dict[label] = 0  # Assign a default class (adjust as needed)
         return class_dicts
-    ######################################################################
 
 
 

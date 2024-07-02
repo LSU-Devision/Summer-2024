@@ -1,4 +1,3 @@
-			
 Label	1	:	F
 Label	2	:	F
 Label	3	:	F

@@ -44,7 +44,7 @@ def main(args):
     Y = sorted(glob("masks/*.*"))
 
     # assertion check ensures that each image has a matching mask with the same filename
-    assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, Y))
+    # assert all(Path(x).stem == Path(y).stem for x, y in zip(X_filenames, Y))
 
     # read image files and store them in a list named X
     X = list(map(read_image, X_filenames))

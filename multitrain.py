@@ -181,6 +181,17 @@ def main(args):
         fig.tight_layout()  # adjust layout so labels do not overlap
         fig.savefig(filename, dpi=600)
 
+
+
+    # where the model will be saved
+    base_dir = "models"
+
+    # make a new directory for the dataset size
+    dataset_dir = os.path.join(base_dir, f'datasize_{len(X)}')
+    os.makedirs(dataset_dir, exist_ok=True)
+
+
+
     # this section saves the training, validation, and testing data in separate images to
     # see the data the program selected using the function from above
     # saving the training images
@@ -245,12 +256,6 @@ def main(args):
 
     # main training loop
     for i in epochs:
-        # where the model will be saved
-        base_dir = "models"
-
-        # make a new directory for the dataset size
-        dataset_dir = os.path.join(base_dir, f'datasize_{len(X)}')
-        os.makedirs(dataset_dir, exist_ok=True)
 
         # naming the model
         model_name = "customModel_" + str(len(X)) + '_epochs_' + str(i)

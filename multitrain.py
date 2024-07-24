@@ -16,6 +16,9 @@ import numpy as np
 import os
 import random
 import re
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 
 # function to parse arguments given in command line
 def parse_args():

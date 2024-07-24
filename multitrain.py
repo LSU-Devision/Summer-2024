@@ -18,8 +18,6 @@ import random
 import re
 import warnings
 
-warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
-
 # function to parse arguments given in command line
 def parse_args():
     parser = argparse.ArgumentParser(description="Here is the help section for the optional commands.")
@@ -37,6 +35,8 @@ def read_image(filename):
     
 # main function
 def main(args):
+    warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
+    
     # ensures that any random operations are reproducible across all runs
     random.seed(42)
 

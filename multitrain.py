@@ -10,6 +10,7 @@ from PIL import Image
 from tqdm import tqdm
 import argparse
 import csv
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -157,42 +158,42 @@ def main(args):
     print(f"validation set size: {len(X_val)}")
     print(f"testing set size: {len(X_test)}")
 
-    # # function to save training, validation, and testing data in a grid to a PNG file
-    # def save_images_to_file(images, filename, title):
-    #     # specify the dimensions of the subplot grid
-    #     n = len(images)
-    #     cols = int(math.sqrt(n))  # assuming you want a square grid, change this as per your requirements
-    #     rows = int(math.ceil(n / cols))
+    # function to save training, validation, and testing data in a grid to a PNG file
+    def save_images_to_file(images, filename, title):
+        # specify the dimensions of the subplot grid
+        n = len(images)
+        cols = int(math.sqrt(n))  # assuming you want a square grid, change this as per your requirements
+        rows = int(math.ceil(n / cols))
 
-    #     # create a new figure with specified size
-    #     fig = plt.figure(figsize=(20, 20))  # adjust as needed
+        # create a new figure with specified size
+        fig = plt.figure(figsize=(20, 20))  # adjust as needed
 
-    #     # set title
-    #     plt.title(title, fontsize=40)  # adjust font size as needed
+        # set title
+        plt.title(title, fontsize=40)  # adjust font size as needed
 
-    #     # iterate over each image and add it to the subplot
-    #     for i in range(n):
-    #         ax = fig.add_subplot(rows, cols, i+1)
-    #         ax.imshow(images[i], cmap='gray')  # using gray colormap as these are grayscale images
-    #         ax.axis('off')  # to remove axis
+        # iterate over each image and add it to the subplot
+        for i in range(n):
+            ax = fig.add_subplot(rows, cols, i+1)
+            ax.imshow(images[i], cmap='gray')  # using gray colormap as these are grayscale images
+            ax.axis('off')  # to remove axis
 
-    #     # adjust layout and save the figure
-    #     fig.tight_layout()  # adjust layout so labels do not overlap
-    #     fig.savefig(filename, dpi=600)
+        # adjust layout and save the figure
+        fig.tight_layout()  # adjust layout so labels do not overlap
+        fig.savefig(filename, dpi=600)
 
-    # # this section saves the training, validation, and testing data in separate images to
-    # # see the data the program selected using the function from above
-    # # saving the training images
-    # training_filename = os.path.join(dataset_dir, 'training_images.png')  # define the path and name for your image
-    # save_images_to_file(X_train, training_filename, "Training Images")
+    # this section saves the training, validation, and testing data in separate images to
+    # see the data the program selected using the function from above
+    # saving the training images
+    training_filename = os.path.join(dataset_dir, 'training_images.png')  # define the path and name for your image
+    save_images_to_file(X_train, training_filename, "Training Images")
 
-    # # saving the validation images
-    # validation_filename = os.path.join(dataset_dir, 'validation_images.png')  # define the path and name for your image
-    # save_images_to_file(X_val, validation_filename, "Validation Images")
+    # saving the validation images
+    validation_filename = os.path.join(dataset_dir, 'validation_images.png')  # define the path and name for your image
+    save_images_to_file(X_val, validation_filename, "Validation Images")
 
-    # # saving the testing images
-    # testing_filename = os.path.join(dataset_dir, 'testing_images.png')  # define the path and name for your image
-    # save_images_to_file(X_test, testing_filename, "Testing Images")
+    # saving the testing images
+    testing_filename = os.path.join(dataset_dir, 'testing_images.png')  # define the path and name for your image
+    save_images_to_file(X_test, testing_filename, "Testing Images")
 
     # function to evaluate and save csv files
     def evaluate_and_save(model, X_data, Y_data, data_type='validation'):

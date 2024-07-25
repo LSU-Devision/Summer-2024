@@ -287,7 +287,7 @@ def main(args):
         epochs = i
 
         # code to train the model based on the data given
-        model.train(X_train, Y_train, classes = C_train, validation_data=(X_val, Y_val, C_val), epochs=epochs)
+        model.train(X_train, Y_train, classes = C_train, validation_data=(X_val, Y_val, C_val), augmenter = augmenter, epochs=epochs)
 
         # optimizing thresholds for validation data
         model.optimize_thresholds(X_val, Y_val)

@@ -3,7 +3,7 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 from collections import OrderedDict
 from csbdeep.utils import normalize
 from glob import glob
-from stardist import fill_label_holes, calculate_extents
+from stardist import fill_label_holes, calculate_extents, gputools_available
 from stardist.matching import matching_dataset
 from stardist.models import Config2D, StarDist2D
 from PIL import Image
@@ -35,7 +35,7 @@ def read_image(filename):
     
 # main function
 def main(args):
-    warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
+    warnings.filterwarnings("ignore")
     
     # ensures that any random operations are reproducible across all runs
     random.seed(42)
@@ -87,13 +87,14 @@ def main(args):
         return sorted_label_dict
     
     C = [process_file(f) for f in cls_filenames]
-    print(C[15])
+
     # configuration object with model parameters to be used in initilization/training
     conf = Config2D(
         n_rays          = 32,
         grid            = (4, 4),
         n_channel_in    = 3,
-        n_classes       = 2
+        n_classes       = 2,
+        use_gpu = True
     )
 
     # function for random flips/rotations of the data

@@ -87,7 +87,7 @@ def main(args):
         return sorted_label_dict
     
     C = [process_file(f) for f in cls_filenames]
-
+    print(C[15])
     # configuration object with model parameters to be used in initilization/training
     conf = Config2D(
         n_rays          = 32,
@@ -199,15 +199,15 @@ def main(args):
     # see the data the program selected using the function from above
     # saving the training images
     training_filename = os.path.join(dataset_dir, 'training_images.png')  # define the path and name for your image
-    save_images_to_file(X_train, training_filename, "Training Images")
+    #save_images_to_file(X_train, training_filename, "Training Images")
 
     # saving the validation images
     validation_filename = os.path.join(dataset_dir, 'validation_images.png')  # define the path and name for your image
-    save_images_to_file(X_val, validation_filename, "Validation Images")
+    #save_images_to_file(X_val, validation_filename, "Validation Images")
 
     # saving the testing images
     testing_filename = os.path.join(dataset_dir, 'testing_images.png')  # define the path and name for your image
-    save_images_to_file(X_test, testing_filename, "Testing Images")
+    #save_images_to_file(X_test, testing_filename, "Testing Images")
 
     # function to evaluate and save csv files
     def evaluate_and_save(model, X_data, Y_data, data_type='validation'):
@@ -286,7 +286,7 @@ def main(args):
         epochs = i
 
         # code to train the model based on the data given
-        model.train(X_train, Y_train, classes = C_train, validation_data=(X_val, Y_val, C_val), augmenter=augmenter, epochs=epochs)
+        model.train(X_train, Y_train, classes = C_train, validation_data=(X_val, Y_val, C_val), epochs=epochs)
 
         # optimizing thresholds for validation data
         model.optimize_thresholds(X_val, Y_val)

@@ -1,7 +1,3 @@
-Label 1 : F
-Label 2 : F
-Label 3 : F
-Label 4 : F
 Label 5 : F
 Label 6 : F
 Label 7 : F

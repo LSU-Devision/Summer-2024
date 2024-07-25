@@ -5,7 +5,6 @@ Label 4 : F
 Label 5 : F
 Label 6 : F
 Label 7 : F
-Label 8 : F
 Label 9 : F
 Label 10 : F
 Label 11 : F
@@ -72,7 +71,6 @@ Label 71 : F
 Label 72 : F
 Label 73 : F
 Label 74 : F
-Label 75 : F
 Label 76 : F
 Label 77 : F
 Label 78 : F

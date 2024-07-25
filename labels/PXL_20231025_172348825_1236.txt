@@ -98,7 +98,6 @@ Label	97	:	UF
 Label	98	:	UF
 Label	99	:	UF
 Label	100	:	UF
-Label	101	:	UF
 Label	102	:	UF
 Label	103	:	UF
 Label	104	:	UF
@@ -375,7 +374,6 @@ Label	374	:	F
 Label	375	:	F
 Label	376	:	F
 Label	377	:	F
-Label	378	:	F
 Label	379	:	F
 Label	380	:	F
 Label	381	:	F

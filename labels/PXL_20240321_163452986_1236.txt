@@ -66,7 +66,6 @@ Label 65 : UF
 Label 66 : UF
 Label 67 : UF
 Label 68 : UF
-Label 69 : F
 Label 70 : UF
 Label 71 : UF
 Label 72 : UF
@@ -115,9 +114,6 @@ Label 114 : UF
 Label 115 : UF
 Label 116 : UF
 Label 117 : UF
-Label 118 : UF
-Label 119 : F
-Label 120 : F
 Label 121 : F
 Label 122 : F
 Label 123 : F
@@ -218,6 +214,5 @@ Label 217 : UF
 Label 218 : UF
 Label 219 : UF
 Label 220 : UF
-Label 221 : UF
 Label 222 : UF
 Label 223 : UF

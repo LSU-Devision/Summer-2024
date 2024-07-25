@@ -35,7 +35,7 @@ def read_image(filename):
     
 # main function
 def main(args):
-    warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
+    warnings.filterwarnings("ignore")
     
     # ensures that any random operations are reproducible across all runs
     random.seed(42)

@@ -38,7 +38,7 @@ def main(args):
     warnings.filterwarnings("ignore")
     
     # ensures that any random operations are reproducible across all runs
-    random.seed(42)
+    random.seed(21)
 
     # X_filenames represents the raw images
     X_filenames = sorted(glob("images/*.*"))
@@ -83,7 +83,7 @@ def main(args):
                 else:
                     print(f"Unmatched line in {file_path}: {line}")
         # Sort the dictionary by keys and return it
-        sorted_label_dict = OrderedDict(sorted(label_dict.items()))
+        sorted_label_dict = dict(OrderedDict(sorted(label_dict.items())))
         return sorted_label_dict
     
     C = [process_file(f) for f in cls_filenames]
